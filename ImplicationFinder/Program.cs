@@ -3,6 +3,7 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Threading;
+using static System.Net.Mime.MediaTypeNames;
 
 
 namespace Books.ListMyLibrary
@@ -11,6 +12,17 @@ namespace Books.ListMyLibrary
     {
         static IDictionary<string, IList<string>> listOfColumns = new Dictionary<string, IList<string>>()
         {
+            { "planet", new List<string>() {
+                "Earth",
+                "Earth",
+                "Earth",
+                "Mars",
+                "Mars",
+                "Mars",
+                "Mars",
+                "Mars",
+                "Mars"
+            } },
             { "class", new List<string>() {
                 "high",
                 "medium",
@@ -26,10 +38,10 @@ namespace Books.ListMyLibrary
                 "100000",
                 "200000",
                 "300000",
-                "400000",
+                "100000",
                 "500000",
                 "600000",
-                "700000",
+                "100000",
                 "800000",
                 "900000"
             } },
@@ -71,14 +83,25 @@ namespace Books.ListMyLibrary
         static void Main(string[] args)
         {
 
-            var implicationResult =  GetLongestImplication(listOfColumns);
-            Console.WriteLine("Longest implication row of column consists of "+ implicationResult +" elements");
+            Console.WriteLine();
+            Console.WriteLine();
 
+            var implicationResult =  GetLongestImplication(listOfColumns);
+            Console.WriteLine("Longest implication row of column consists of "+ implicationResult +" elements"); 
             Console.WriteLine("There are next order of implication:");
+
+
+            Console.WriteLine();
+
             foreach (var implication in implicationResult)
             {
-                Console.WriteLine(implication);
+                if (implication != implicationResult.First())
+                    Console.Write(" -> ");
+                Console.Write(implication);
             }
+
+            Console.WriteLine();
+            Console.WriteLine(); 
         }
 
 
@@ -87,7 +110,7 @@ namespace Books.ListMyLibrary
         {
             var implicationsFrom = GetImplicatesFromRelations(table);
 
-            var result = GetImplicationsRow(implicationsFrom);
+            var result =  GetImplicationsRow(implicationsFrom).Reverse().ToList();
 
             return result;
         }
