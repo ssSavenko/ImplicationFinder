@@ -8,9 +8,9 @@ namespace Books.ListMyLibrary
 {
     internal class Program
     {
-        IList<IList<string>> listOfColumns = new List<IList<string>>()
+        static  IDictionary<string, IList<string>> listOfColumns = new Dictionary<string, IList<string>>()
         {
-            new List<string>() {"class",
+            { "class", new List<string>() {
                 "high",
                 "medium",
                 "low",
@@ -20,8 +20,8 @@ namespace Books.ListMyLibrary
                 "high",
                 "medium",
                 "low"
-            },
-            new List<string>() {"count",
+            } },
+            {"count", new List<string>() {
                 "100000",
                 "200000",
                 "300000",
@@ -31,8 +31,8 @@ namespace Books.ListMyLibrary
                 "700000",
                 "800000",
                 "900000"
-            },
-            new List<string>() {"continent",
+            } },
+            { "continent", new List<string>() {
                 "Europe",
                 "Europe",
                 "Europe",
@@ -42,8 +42,8 @@ namespace Books.ListMyLibrary
                 "Asia",
                 "Asia",
                 "Asia"
-            },
-            new List<string>() {"country",
+            } },
+            { "country", new List<string>() {
                 "German",
                 "German",
                 "German",
@@ -53,8 +53,8 @@ namespace Books.ListMyLibrary
                 "China",
                 "China",
                 "Japan"
-            },
-            new List<string>() {"city",
+            } },
+            {"city", new List<string>() {
                 "Berlin",
                 "Berlin",
                 "Stuttgart",
@@ -64,14 +64,63 @@ namespace Books.ListMyLibrary
                 "Hong Kong",
                 "Hong Kong",
                 "Tokyo"
-            }
+            } }
         };  
 
         static void Main(string[] args)
         {
 
+            GetImplicatesFromRelations(listOfColumns);
+
+        }
 
 
+        static int GetLongestImplication(IDictionary<string, IList<string>> table)
+        {
+
+            return 0;
+        }
+
+        static IDictionary<string, IList<string>> GetImplicatesFromRelations(IDictionary<string, IList<string>> table)
+        {
+            IDictionary<string, IList<string>> result = new Dictionary<string, IList<string>>(); 
+            foreach (var implicatableKey in table.Keys)
+            {
+                IList<string> implicationsList = new List<string>();
+                foreach (var initialKey in table.Keys)
+                {
+                    if (implicatableKey != initialKey &&  IsRowImplicatesTo(table[initialKey], table[implicatableKey]))
+                    {
+                        implicationsList.Add(initialKey);
+                    } 
+                } 
+                result[implicatableKey]= implicationsList;
+            }
+            return result;  
+        }
+
+        static bool IsRowImplicatesTo(IList<string> initialRow, IList<string> implicatableRow)
+        {
+            Dictionary<string, string> keyDict = new Dictionary<string, string>();
+            bool result = true;
+            bool wasAnyRepeat = false;
+            for (int i = 0; i < initialRow.Count; i++)
+            {
+                if (keyDict.ContainsKey(implicatableRow[i]))
+                {
+                    if (keyDict[implicatableRow[i]] != initialRow[i])
+                    {
+                        result = false;
+                        break;
+                    }
+                    wasAnyRepeat = true;
+                }
+                else
+                {
+                    keyDict[implicatableRow[i]] = initialRow[i];
+                }
+            }
+            return result && wasAnyRepeat;
         }
 
     }
