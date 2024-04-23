@@ -1,14 +1,15 @@
 ﻿using System;
 using System.IO;
+using System.Linq;
 using System.Net;
 using System.Threading;
- 
+
 
 namespace Books.ListMyLibrary
 {
     internal class Program
     {
-        static  IDictionary<string, IList<string>> listOfColumns = new Dictionary<string, IList<string>>()
+        static IDictionary<string, IList<string>> listOfColumns = new Dictionary<string, IList<string>>()
         {
             { "class", new List<string>() {
                 "high",
@@ -65,38 +66,84 @@ namespace Books.ListMyLibrary
                 "Hong Kong",
                 "Tokyo"
             } }
-        };  
+        };
 
         static void Main(string[] args)
         {
 
-            GetImplicatesFromRelations(listOfColumns);
+            var implicationResult =  GetLongestImplication(listOfColumns);
+            Console.WriteLine("Longest implication row of column consists of "+ implicationResult +" elements");
 
+            Console.WriteLine("There are next order of implication:");
+            foreach (var implication in implicationResult)
+            {
+                Console.WriteLine(implication);
+            }
         }
 
 
-        static int GetLongestImplication(IDictionary<string, IList<string>> table)
-        {
 
-            return 0;
+        static IList<string> GetLongestImplication(IDictionary<string, IList<string>> table)
+        {
+            var implicationsFrom = GetImplicatesFromRelations(table);
+
+            var result = GetImplicationsRow(implicationsFrom);
+
+            return result;
+        }
+
+        static IList<string> GetImplicationsRow(IDictionary<string, IList<string>> implicationsFrom, IList<string> currentImplicationRow = null)
+        {
+            if (currentImplicationRow == null)
+            {
+                currentImplicationRow = new List<string>();
+            }
+            var lastColumn = currentImplicationRow.LastOrDefault() ?? "";
+            var lastImplicationRow = currentImplicationRow;
+            var longestImplicationRow = currentImplicationRow;
+
+            foreach (var implicationsFromElement in implicationsFrom)
+            {
+                if (currentImplicationRow.Contains(implicationsFromElement.Key))
+                    continue;
+
+                if (currentImplicationRow.Count == 0)
+                {
+                    lastImplicationRow = GetImplicationsRow(implicationsFrom, new List<string>{implicationsFromElement.Key});
+                }
+                else if(implicationsFrom[lastColumn].Contains(implicationsFromElement.Key))
+                {
+                    var newList = new List<string>(currentImplicationRow)
+                    {
+                        implicationsFromElement.Key
+                    };
+                    lastImplicationRow = GetImplicationsRow(implicationsFrom, newList);
+                }
+
+                if(lastImplicationRow.Count > longestImplicationRow.Count)
+                {
+                    longestImplicationRow = lastImplicationRow;
+                }
+            }
+            return longestImplicationRow;
         }
 
         static IDictionary<string, IList<string>> GetImplicatesFromRelations(IDictionary<string, IList<string>> table)
         {
-            IDictionary<string, IList<string>> result = new Dictionary<string, IList<string>>(); 
+            IDictionary<string, IList<string>> result = new Dictionary<string, IList<string>>();
             foreach (var implicatableKey in table.Keys)
             {
                 IList<string> implicationsList = new List<string>();
                 foreach (var initialKey in table.Keys)
                 {
-                    if (implicatableKey != initialKey &&  IsRowImplicatesTo(table[initialKey], table[implicatableKey]))
+                    if (implicatableKey != initialKey && IsRowImplicatesTo(table[initialKey], table[implicatableKey]))
                     {
                         implicationsList.Add(initialKey);
-                    } 
-                } 
-                result[implicatableKey]= implicationsList;
+                    }
+                }
+                result[implicatableKey] = implicationsList;
             }
-            return result;  
+            return result;
         }
 
         static bool IsRowImplicatesTo(IList<string> initialRow, IList<string> implicatableRow)
