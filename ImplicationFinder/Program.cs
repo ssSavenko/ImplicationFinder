@@ -88,7 +88,7 @@ namespace Books.ListMyLibrary
 
             var implicationResult = GetLongestImplication(listOfColumns, true);
             Console.WriteLine("Lonely Implication true");
-            Console.WriteLine("Longest implication row of column consists of " + implicationResult + " elements");
+            Console.WriteLine("Longest implication row of column consists of " + implicationResult.Count + " elements");
             Console.WriteLine("There are next order of implication:");
 
 
@@ -107,7 +107,7 @@ namespace Books.ListMyLibrary
 
             implicationResult = GetLongestImplication(listOfColumns);
             Console.WriteLine("Lonely Implication false");
-            Console.WriteLine("Longest implication row of column consists of " + implicationResult + " elements");
+            Console.WriteLine("Longest implication row of column consists of " + implicationResult.Count + " elements");
             Console.WriteLine("There are next order of implication:");
 
 
