@@ -56,9 +56,9 @@ namespace implicationFinder
                 "Asia"
             } },
             { "country", new List<string>() {
-                "German",
-                "German",
-                "German",
+                "Germany",
+                "Germany",
+                "Germany",
                 "USA",
                 "USA",
                 "Mexico",
