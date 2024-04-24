@@ -86,8 +86,9 @@ namespace Books.ListMyLibrary
             Console.WriteLine();
             Console.WriteLine();
 
-            var implicationResult =  GetLongestImplication(listOfColumns, true);
-            Console.WriteLine("Longest implication row of column consists of "+ implicationResult +" elements"); 
+            var implicationResult = GetLongestImplication(listOfColumns, true);
+            Console.WriteLine("Lonely Implication true");
+            Console.WriteLine("Longest implication row of column consists of " + implicationResult + " elements");
             Console.WriteLine("There are next order of implication:");
 
 
@@ -101,7 +102,26 @@ namespace Books.ListMyLibrary
             }
 
             Console.WriteLine();
-            Console.WriteLine(); 
+            Console.WriteLine();
+             
+
+            implicationResult = GetLongestImplication(listOfColumns);
+            Console.WriteLine("non lonely Implication true");
+            Console.WriteLine("Longest implication row of column consists of " + implicationResult + " elements");
+            Console.WriteLine("There are next order of implication:");
+
+
+            Console.WriteLine();
+
+            foreach (var implication in implicationResult)
+            {
+                if (implication != implicationResult.First())
+                    Console.Write(" -> ");
+                Console.Write(implication);
+            }
+
+            Console.WriteLine();
+            Console.WriteLine();
         }
 
 
