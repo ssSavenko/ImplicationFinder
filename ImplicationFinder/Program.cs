@@ -38,10 +38,10 @@ namespace Books.ListMyLibrary
                 "100000",
                 "200000",
                 "300000",
-                "100000",
+                "400000",
                 "500000",
                 "600000",
-                "100000",
+                "700000",
                 "800000",
                 "900000"
             } },
@@ -86,7 +86,7 @@ namespace Books.ListMyLibrary
             Console.WriteLine();
             Console.WriteLine();
 
-            var implicationResult =  GetLongestImplication(listOfColumns);
+            var implicationResult =  GetLongestImplication(listOfColumns, true);
             Console.WriteLine("Longest implication row of column consists of "+ implicationResult +" elements"); 
             Console.WriteLine("There are next order of implication:");
 
@@ -106,9 +106,9 @@ namespace Books.ListMyLibrary
 
 
 
-        static IList<string> GetLongestImplication(IDictionary<string, IList<string>> table)
+        static IList<string> GetLongestImplication(IDictionary<string, IList<string>> table, bool includeLonelyImplications = false)
         {
-            var implicationsFrom = GetImplicatesFromRelations(table);
+            var implicationsFrom = GetImplicatesFromRelations(table, includeLonelyImplications);
 
             var result =  GetImplicationsRow(implicationsFrom).Reverse().ToList();
 
@@ -151,7 +151,7 @@ namespace Books.ListMyLibrary
             return longestImplicationRow;
         }
 
-        static IDictionary<string, IList<string>> GetImplicatesFromRelations(IDictionary<string, IList<string>> table)
+        static IDictionary<string, IList<string>> GetImplicatesFromRelations(IDictionary<string, IList<string>> table, bool includeLonelyImplications = false)
         {
             IDictionary<string, IList<string>> result = new Dictionary<string, IList<string>>();
             foreach (var implicatableKey in table.Keys)
@@ -159,7 +159,7 @@ namespace Books.ListMyLibrary
                 IList<string> implicationsList = new List<string>();
                 foreach (var initialKey in table.Keys)
                 {
-                    if (implicatableKey != initialKey && IsRowImplicatesTo(table[initialKey], table[implicatableKey]))
+                    if (implicatableKey != initialKey && IsRowImplicatesTo(table[initialKey], table[implicatableKey], includeLonelyImplications))
                     {
                         implicationsList.Add(initialKey);
                     }
@@ -169,7 +169,7 @@ namespace Books.ListMyLibrary
             return result;
         }
 
-        static bool IsRowImplicatesTo(IList<string> initialRow, IList<string> implicatableRow)
+        static bool IsRowImplicatesTo(IList<string> initialRow, IList<string> implicatableRow, bool includeLonelyImplications = false)
         {
             Dictionary<string, string> keyDict = new Dictionary<string, string>();
             bool result = true;
@@ -190,7 +190,7 @@ namespace Books.ListMyLibrary
                     keyDict[implicatableRow[i]] = initialRow[i];
                 }
             }
-            return result && wasAnyRepeat;
+            return result && (wasAnyRepeat|| includeLonelyImplications);
         }
 
     }
